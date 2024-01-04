@@ -1,0 +1,83 @@
+---
+
+const API = import.meta.env.PUBLIC_API || "http://localhost:3000";
+
+if (Astro.request.method === "POST") {
+	try {
+		const data = await Astro.request.formData();
+		
+
+		fetch( API + "/test",
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		.then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+		})
+		.then(responseData => {
+			if (responseData.success) {
+				console.log('Mensaje de éxito:', responseData.message);
+			} else {
+				console.error('Error en la solicitud:', responseData.message);
+			}
+		})
+		.catch(error => {
+			console.error('Error en la solicitud:', error);
+		});
+		
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error(error.message);
+		}
+	}
+}
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div class="grid justify-items-center content-center h-64">
+			<h1 class="font-medium text-pretty">Formulario</h1>
+			<form action="" id="post-form" method="post" class="border p-5 space-y-4">
+				<fieldset class="grid grid-rows-2 space-y-4">
+
+						<label for="userName" class="text-sm">
+							Nombre de usuario
+							<input type="text" id="userName" name="userName" class="border w-full border-blue-200 focus:border-blue-500">
+						</label>
+
+						<label for="userMessage" class="text-sm">
+							Mensaje
+							<input type="text" id="userMessage" name="userMessage" class="border w-full border-blue-200 focus:border-blue-500">
+						</label>
+
+
+				</fieldset>
+				<div class="flex justify-center">
+					<button type="submit" class="bg-blue-500 text-white px-8 py-2">Enviar</button>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>
+
+<script>
+	// const $postForm =document.getElementById("post-form");
+
+	// $postForm?.addEventListener("submit", ( ev => {
+	// 	ev.preventDefault();
+	// }))
+</script>
