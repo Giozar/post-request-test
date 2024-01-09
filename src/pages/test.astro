@@ -33,51 +33,52 @@
 </html>
 
 <script>
+    const API: string = import.meta.env.PUBLIC_API || "https://1mfnu9zca4.execute-api.us-east-1.amazonaws.com/prod";
+// const API: string = import.meta.env.PUBLIC_API || "http://localhost:3000";
 
-    const API = import.meta.env.PUBLIC_API || "https://1mfnu9zca4.execute-api.us-east-1.amazonaws.com/prod";
-    // const API = import.meta.env.PUBLIC_API || "http://localhost:3000";
+interface ResponseData {
+  success: boolean;
+  message: string;
+}
 
-    function requestPost(data:Object){
-        try {
-		
-            fetch( API + "/test",
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-            })
-            .then(responseData => {
-                if (responseData.success) {
-                    console.log('Mensaje de éxito:', responseData.message);
-                } else {
-                    console.error('Error en la solicitud:', responseData.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error en la solicitud:', error);
-            });
-            
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error(error.message);
-            }
+function requestPost(data: object): void {
+  try {
+    fetch(`${API}/test`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
+      })
+      .then((responseData: ResponseData) => {
+        if (responseData.success) {
+          console.log('Mensaje de éxito:', responseData.message);
+        } else {
+          console.error('Error en la solicitud:', responseData.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error en la solicitud:', error);
+      });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
     }
+  }
+}
 
-	const $postForm =document.getElementById("post-form");
+const $postForm: HTMLFormElement | null = document.getElementById("post-form") as HTMLFormElement | null;
 
-	$postForm?.addEventListener("submit", ( ev => {
-	    ev.preventDefault();
-        const data = Object.fromEntries( new FormData(ev.target));
-        requestPost(data);
-	}))
+$postForm?.addEventListener("submit", (ev: Event) => {
+  ev.preventDefault();
+  const data: object = Object.fromEntries(new FormData($postForm as HTMLFormElement));
+  requestPost(data);
+});
 
 </script>
